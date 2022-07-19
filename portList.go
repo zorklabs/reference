@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"strconv"
 
+	"github.com/beevik/etree"
 	"github.com/bitwurx/jrpc2"
 )
 
@@ -23,6 +24,23 @@ func (swIp *SwitchIP) FromPositional(params []interface{}) error {
 	return nil
 }
 
+func ReadPortsFromSwitch() map[string]int {
+	portList := make(map[string]int)
+
+	doc := etree.NewDocument()
+	if err := doc.ReadFromFile("data.xml"); err != nil {
+		panic(err)
+	}
+	root := doc.FindElement("/rpc-reply/data/top/Ifmgr/Interfaces")
+
+	for _, swIf := range root.SelectElements("Interface") {
+		idx, _ := strconv.Atoi(swIf.SelectElement("IfIndex").Text())
+		portList[swIf.SelectElement("AbbreviatedName").Text()] = idx
+	}
+
+	return portList
+}
+
 func GetPortList(params json.RawMessage) (interface{}, *jrpc2.ErrorObject) {
 	p := new(SwitchIP)
 
@@ -30,21 +48,5 @@ func GetPortList(params json.RawMessage) (interface{}, *jrpc2.ErrorObject) {
 		return nil, err
 	}
 
-	fmt.Println(*p.IP)
-
-	portList := make(map[int]string)
-	portList[1] = "GE1/0/1"
-	portList[2] = "GE1/0/2"
-	portList[3] = "GE1/0/3"
-	portList[4] = "GE1/0/4"
-	portList[5] = "GE1/0/5"
-
-	// portList := make(map[string]int)
-	// portList["GE1/0/1"] = 1
-	// portList["GE1/0/2"] = 2
-	// portList["GE1/0/3"] = 3
-	// portList["GE1/0/4"] = 4
-	// portList["GE1/0/5"] = 5
-
-	return portList, nil
+	return ReadPortsFromSwitch(), nil
 }

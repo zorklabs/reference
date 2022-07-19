@@ -1,2 +1,4 @@
+github.com/beevik/etree v1.1.0 h1:T0xke/WvNtMoCqgzPhkX2r4rjY3GDZFi+FjpRZY2Jbs=
+github.com/beevik/etree v1.1.0/go.mod h1:r8Aw8JqVegEf0w2fDnATrX9VpkMcyFeM0FhwO62wh+A=
 github.com/bitwurx/jrpc2 v0.0.0-20220302204700-52c6dbbeb536 h1:Zg4RS0l8u0RmANAiHj268AGiyXan7sUe9AN1EwbFu4U=
 github.com/bitwurx/jrpc2 v0.0.0-20220302204700-52c6dbbeb536/go.mod h1:K64+nDVvge4TqX4W97W+bmeicRpmllWtqDA5g92KfTk=

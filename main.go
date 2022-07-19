@@ -10,6 +10,8 @@ func main() {
 
 	// register the add method
 	s.Register("get_port_list", jrpc2.Method{Method: GetPortList})
+	// s.Register("get_port_list", jrpc2.Method{Method: GetPortList})
+	// s.Register("get_port_list", jrpc2.Method{Method: GetPortList})
 
 	// register the subtract method to proxy another rpc server
 	// s.Register("add", jrpc2.Method{Url: "http://localhost:9999/api/v1/rpc"})

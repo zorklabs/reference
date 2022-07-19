@@ -15,7 +15,7 @@ type SwitchIP struct {
 
 func (swIp *SwitchIP) FromPositional(params []interface{}) error {
 	if len(params) != 1 {
-		return errors.New("exactly onet IP string is required")
+		return errors.New("exactly one IP string is required")
 	}
 
 	x := params[0].(string)
@@ -24,21 +24,23 @@ func (swIp *SwitchIP) FromPositional(params []interface{}) error {
 	return nil
 }
 
-func ReadPortsFromSwitch() map[string]int {
-	portList := make(map[string]int)
+type PortList map[string]int
+
+func ReadPortsFromSwitch() PortList {
+	portsIdxList := make(PortList)
 
 	doc := etree.NewDocument()
 	if err := doc.ReadFromFile("data.xml"); err != nil {
 		panic(err)
 	}
-	root := doc.FindElement("/rpc-reply/data/top/Ifmgr/Interfaces")
+	interfaceData := doc.FindElement("/rpc-reply/data/top/Ifmgr/Interfaces")
 
-	for _, swIf := range root.SelectElements("Interface") {
-		idx, _ := strconv.Atoi(swIf.SelectElement("IfIndex").Text())
-		portList[swIf.SelectElement("AbbreviatedName").Text()] = idx
+	for _, swIface := range interfaceData.SelectElements("Interface") {
+		idxNum, _ := strconv.Atoi(swIface.SelectElement("IfIndex").Text())
+		portsIdxList[swIface.SelectElement("AbbreviatedName").Text()] = idxNum
 	}
 
-	return portList
+	return portsIdxList
 }
 
 func GetPortList(params json.RawMessage) (interface{}, *jrpc2.ErrorObject) {
